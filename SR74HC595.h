@@ -33,7 +33,7 @@ void SR_OUT_V(uint8_t size, uint32_t b){
     SR74_ATTH; SR74_ATTL;
 }
 
-/*==================== EXPANS?O DE PORTS - PORTS EXPANDER =====================*/
+/*==================== EXPANSAO DE PORTS - PORTS EXPANDER =====================*/
 
 uint8_t PORTE=0;
 uint8_t PORTF=0;
