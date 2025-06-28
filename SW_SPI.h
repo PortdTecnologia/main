@@ -1,8 +1,13 @@
 /*****************************************************************************/
 /**                             SOFTWARE SPI                                **/
-/** Created: 26/06/2025  V1.0                      IDE: Mounriver Studio    **/
+/** Created: 26/06/2025  V1.1                      IDE: Mounriver Studio    **/
 /** Autor: Gustavo Pereira da Silva                PORTD Tecnologia         **/
 /*****************************************************************************/
+
+// V1.1 => 28/06/2025 Changelog - Alteracoes
+// Separate Low-Speed SW SPI and High-Speed SW SPI
+// Separadas as funcoes de baixa e alta velocidade
+
 
 /* DRIVER CONFIG */
 #define SPI_CLK_HIGH    PORTC_OUT(4,1)      // SCLK PIN HIGH
@@ -22,18 +27,11 @@
 /*===========================================================================*/
                      /*= FUNCOES BASE - BASE FUNCTIONS =*/
 
-uint16_t SPI_SPEED=0; // 10 for +- 100Khz
-
-void SPI_CLOCK(){
-    SPI_CLK_HIGH; if(SPI_SPEED){ SPI_TEMP; }
-    SPI_CLK_LOW;  if(SPI_SPEED){ SPI_TEMP; }
-}
-
 void SPI_DATAOUT(uint8_t size, uint32_t b){
 
     for(uint8_t i=size;i>0;i--){
         if(b&(1<<(i-1))){ SPI_SDO_HIGH; } else{ SPI_SDO_LOW; }
-        SPI_CLOCK();
+        SPI_CLK_HIGH; SPI_CLK_LOW;
     }
 }
 
@@ -42,11 +40,33 @@ uint32_t SPI_DATAIN(uint8_t size){
     uint32_t DATA=0;
     for(uint8_t i=size;i>0;i--){
         if(SPI_SDI){ DATA |= (1<<(i-1)); }
-        SPI_CLOCK();
+        SPI_CLK_HIGH; SPI_CLK_LOW;
     }
     return DATA;
 }
 
+/*===========================================================================*/
+                            /*= LOW SPEED SW SPI =*/
+
+uint16_t SPI_SPEED=0; // 10 for +- 100Khz
+
+void SPI_DATAOUT_L(uint8_t size, uint32_t b){
+
+    for(uint8_t i=size;i>0;i--){
+        if(b&(1<<(i-1))){ SPI_SDO_HIGH; } else{ SPI_SDO_LOW; }
+        SPI_CLK_HIGH; SPI_TEMP; SPI_CLK_LOW; SPI_TEMP;
+    }
+}
+
+uint32_t SPI_DATAIN_L(uint8_t size){
+    
+    uint32_t DATA=0;
+    for(uint8_t i=size;i>0;i--){
+        if(SPI_SDI){ DATA |= (1<<(i-1)); }
+        SPI_CLK_HIGH; SPI_TEMP; SPI_CLK_LOW; SPI_TEMP;
+    }
+    return DATA;
+}
 
 /****************************************************************/
 /**         PARA MAIS INFORMACOES - MORE INFORMATIONS          **/
