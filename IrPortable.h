@@ -1,6 +1,6 @@
 /*****************************************************************************/
 /**                          INFRARED SENSOR                                **/
-/** Created: 27/05/2025  V1.0                      IDE: Mounriver Studio    **/
+/** Created: 27/05/2025  V1.1                      IDE: Mounriver Studio    **/
 /** Autor: Gustavo Pereira da Silva                PORTD Tecnologia         **/
 /*****************************************************************************/
 
@@ -17,8 +17,7 @@ volatile uint32_t IRBAUD =0;
 void irgetbaud(){
     IRBAUD =0;
     while(!IR_RXPIN){ IRBAUD++; if(IRBAUD>IRTIMEOUT){ break; } }
-    IRBAUD=IRBAUD+(IRBAUD * 0.20);
-    //IRBAUD=IRBAUD+((IRBAUD/100)*20);
+    IRBAUD=IRBAUD+((IRBAUD/100)*20);
 }
 
 uint8_t irgetbit(){
